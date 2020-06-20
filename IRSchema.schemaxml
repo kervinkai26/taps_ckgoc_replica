@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="latin1" collation="latin1_swedish_ci">taps_ckgoc_replica</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="pev_t_ir_bpartner_employee_juror_recommend" view="colnames">
+<left>6</left>
+<top>8</top>
+<width>339</width>
+<height>214</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_bpartner_employee_juror_recommend` (
+  `pev_t_ir_bpartner_employee_juror_recommend_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_juror_id` bigint(30) DEFAULT NULL,
+  `pev_t_ir_bpartner_employee_id` bigint(30) DEFAULT NULL,
+  `recommendation` text,
+  `is_final` tinyint(1) DEFAULT NULL,
+  `has_deliberated` tinyint(1) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_bpartner_employee_juror_recommend_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_juror_recommend_juror` (`pev_t_ir_juror_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_juror_recommend_bpartner` (`pev_t_ir_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_juror_recommend_bpartner` FOREIGN KEY (`pev_t_ir_bpartner_employee_id`) REFERENCES `pev_t_ir_bpartner_employee` (`pev_t_ir_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_juror_recommend_juror` FOREIGN KEY (`pev_t_ir_juror_id`) REFERENCES `pev_t_ir_juror` (`pev_t_ir_juror_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1911 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_bpartner_employee_violation" view="colnames">
+<left>529</left>
+<top>253</top>
+<width>339</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_bpartner_employee_violation` (
+  `pev_t_ir_bpartner_employee_violation_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_bpartner_employee_juror_recommend_id` bigint(30) DEFAULT NULL,
+  `pev_i_ir_violation_id` bigint(30) DEFAULT NULL,
+  `pev_i_ir_sanction_id` bigint(30) DEFAULT NULL,
+  `violation` text,
+  `recommendation` text,
+  PRIMARY KEY (`pev_t_ir_bpartner_employee_violation_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_violation_violation` (`pev_i_ir_violation_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_violation_sanction` (`pev_i_ir_sanction_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_violation_juror_recommend` (`pev_t_ir_bpartner_employee_juror_recommend_id`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_violation_juror_recommend` FOREIGN KEY (`pev_t_ir_bpartner_employee_juror_recommend_id`) REFERENCES `pev_t_ir_bpartner_employee_juror_recommend` (`pev_t_ir_bpartner_employee_juror_recommend_id`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_violation_sanction` FOREIGN KEY (`pev_i_ir_sanction_id`) REFERENCES `pev_i_ir_sanction` (`pev_i_ir_sanction_id`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_violation_violation` FOREIGN KEY (`pev_i_ir_violation_id`) REFERENCES `pev_i_ir_violation` (`pev_i_ir_violation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2737 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_bpartner_employee" view="colnames">
+<left>635</left>
+<top>14</top>
+<width>229</width>
+<height>231</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_bpartner_employee` (
+  `pev_t_ir_bpartner_employee_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_id` bigint(30) DEFAULT NULL,
+  `s_bpartner_employee_id` bigint(30) DEFAULT NULL,
+  `ir_status` enum('PENDING','DISMISSED','PROCEEDED','PROCESSED','DISCONTINUED','CANCELLED','NEW','DELIBERATING','JUDGED','CLOSED','DELIBERATED') DEFAULT NULL,
+  `final_recommendation` text,
+  `date_updated` datetime DEFAULT NULL,
+  `s_bpartner_employee_id_md` bigint(30) DEFAULT NULL,
+  `is_signed` tinyint(1) DEFAULT NULL,
+  `date_signed` datetime DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_bpartner_employee_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_bpartner` (`s_bpartner_employee_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_main` (`pev_t_ir_id`),
+  KEY `FK_pev_t_ir_bpartner_employee_md` (`s_bpartner_employee_id_md`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_bpartner` FOREIGN KEY (`s_bpartner_employee_id`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_main` FOREIGN KEY (`pev_t_ir_id`) REFERENCES `pev_t_ir` (`pev_t_ir_id`),
+  CONSTRAINT `FK_pev_t_ir_bpartner_employee_md` FOREIGN KEY (`s_bpartner_employee_id_md`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1974 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_juror" view="colnames">
+<left>407</left>
+<top>15</top>
+<width>223</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_juror` (
+  `pev_t_ir_juror_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_id` bigint(30) DEFAULT NULL,
+  `s_bpartner_employee_id_juror` bigint(30) DEFAULT NULL,
+  `date_created` date DEFAULT NULL,
+  `is_judge` tinyint(1) DEFAULT NULL,
+  `is_superior` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_juror_id`),
+  KEY `FK_pev_t_ir_juror_bpartner` (`s_bpartner_employee_id_juror`),
+  KEY `FK_pev_t_ir_juror_main` (`pev_t_ir_id`),
+  CONSTRAINT `FK_pev_t_ir_juror_bpartner` FOREIGN KEY (`s_bpartner_employee_id_juror`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_t_ir_juror_main` FOREIGN KEY (`pev_t_ir_id`) REFERENCES `pev_t_ir` (`pev_t_ir_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4206 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_i_ir_crr" view="colnames">
+<left>873</left>
+<top>16</top>
+<width>132</width>
+<height>214</height>
+<sql_create_table>CREATE TABLE `pev_i_ir_crr` (
+  `pev_i_ir_crr_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `crr` varchar(100) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
+  `created` varchar(30) DEFAULT NULL,
+  `updated` varchar(30) DEFAULT NULL,
+  `rule_no` int(11) DEFAULT NULL,
+  PRIMARY KEY (`pev_i_ir_crr_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_i_ir_sanction" view="colnames">
+<left>872</left>
+<top>237</top>
+<width>163</width>
+<height>214</height>
+<sql_create_table>CREATE TABLE `pev_i_ir_sanction` (
+  `pev_i_ir_sanction_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `sanction_description` varchar(100) DEFAULT NULL,
+  `sanction_code` varchar(5) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `created` varchar(30) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `updated` varchar(30) DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`pev_i_ir_sanction_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_i_ir_violation" view="colnames">
+<left>359</left>
+<top>202</top>
+<width>164</width>
+<height>214</height>
+<sql_create_table>CREATE TABLE `pev_i_ir_violation` (
+  `pev_i_ir_violation_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_i_ir_crr_id` bigint(30) DEFAULT NULL,
+  `nature_of_violation` text,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `created` varchar(30) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `updated` varchar(30) DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`pev_i_ir_violation_id`),
+  KEY `FK_pev_i_ir_violation_crr` (`pev_i_ir_crr_id`),
+  CONSTRAINT `FK_pev_i_ir_violation_crr` FOREIGN KEY (`pev_i_ir_crr_id`) REFERENCES `pev_i_ir_crr` (`pev_i_ir_crr_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir" view="colnames">
+<left>7</left>
+<top>228</top>
+<width>246</width>
+<height>311</height>
+<sql_create_table>CREATE TABLE `pev_t_ir` (
+  `pev_t_ir_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `documentno` varchar(30) DEFAULT NULL,
+  `s_doctype_id` bigint(30) DEFAULT NULL,
+  `docstatus` varchar(5) DEFAULT NULL,
+  `ir_what` text,
+  `ir_when` date DEFAULT NULL,
+  `ir_where` text,
+  `ir_extent` text,
+  `ir_additional_info` text,
+  `date_processed` datetime DEFAULT NULL,
+  `s_bpartner_employee_id_observer` bigint(30) DEFAULT NULL,
+  `doc_i_submod_id` bigint(30) DEFAULT NULL,
+  `ad_org_id` bigint(30) DEFAULT NULL,
+  `is_commitment_letter` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_id`),
+  KEY `FK_pev_t_ir_observer` (`s_bpartner_employee_id_observer`),
+  KEY `FK_pev_t_ir_doctype` (`s_doctype_id`),
+  KEY `FK_pev_t_ir_adorg` (`ad_org_id`),
+  KEY `FK_pev_t_ir_doc_submod` (`doc_i_submod_id`),
+  CONSTRAINT `FK_pev_t_ir_adorg` FOREIGN KEY (`ad_org_id`) REFERENCES `ad_org` (`ad_org_id`),
+  CONSTRAINT `FK_pev_t_ir_doc_submod` FOREIGN KEY (`doc_i_submod_id`) REFERENCES `doc_i_submod` (`doc_i_submod_id`),
+  CONSTRAINT `FK_pev_t_ir_observer` FOREIGN KEY (`s_bpartner_employee_id_observer`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1351 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_attachment" view="colnames">
+<left>276</left>
+<top>426</top>
+<width>181</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_attachment` (
+  `pev_t_ir_attachment_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_id` bigint(30) DEFAULT NULL,
+  `attachment_description` varchar(30) DEFAULT NULL,
+  `attachment` longblob,
+  `date_created` datetime DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_attachment_id`),
+  KEY `FK_pev_t_ir_attachment_main` (`pev_t_ir_id`),
+  CONSTRAINT `FK_pev_t_ir_attachment_main` FOREIGN KEY (`pev_t_ir_id`) REFERENCES `pev_t_ir` (`pev_t_ir_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=228 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_notice" view="colnames">
+<left>256</left>
+<top>597</top>
+<width>229</width>
+<height>214</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_notice` (
+  `pev_t_ir_notice_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_bpartner_employee_id` bigint(30) DEFAULT NULL,
+  `summary_of_incident` text,
+  `date_created` datetime DEFAULT NULL,
+  `s_bpartner_employee_id_mkr` bigint(30) DEFAULT NULL,
+  `date_deadline` date DEFAULT NULL,
+  `is_for_commitment_letter` tinyint(1) DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_notice_id`),
+  KEY `FK_pev_t_ir_notice_bpartner_mkr` (`s_bpartner_employee_id_mkr`),
+  KEY `FK_pev_t_ir_notice_bpar_emp` (`pev_t_ir_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_t_ir_notice_bpar_emp` FOREIGN KEY (`pev_t_ir_bpartner_employee_id`) REFERENCES `pev_t_ir_bpartner_employee` (`pev_t_ir_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_t_ir_notice_bpartner_mkr` FOREIGN KEY (`s_bpartner_employee_id_mkr`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1980 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_notice_attachment" view="colnames">
+<left>22</left>
+<top>559</top>
+<width>222</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_notice_attachment` (
+  `pev_t_ir_notice_attachment_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_notice_id` bigint(30) DEFAULT NULL,
+  `attachment` longblob,
+  `attachment_description` text,
+  `date_created` datetime DEFAULT NULL,
+  `s_bpartner_employee_id_mkr` bigint(30) DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_notice_attachment_id`),
+  KEY `FK_pev_t_ir_notice_attachment_bpartner_mkr` (`s_bpartner_employee_id_mkr`),
+  KEY `FK_pev_t_ir_notice_attachment_notice_main` (`pev_t_ir_notice_id`),
+  CONSTRAINT `FK_pev_t_ir_notice_attachment_bpartner_mkr` FOREIGN KEY (`s_bpartner_employee_id_mkr`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_t_ir_notice_attachment_notice_main` FOREIGN KEY (`pev_t_ir_notice_id`) REFERENCES `pev_t_ir_notice` (`pev_t_ir_notice_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=448 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_notice_explanation" view="colnames">
+<left>467</left>
+<top>432</top>
+<width>224</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_notice_explanation` (
+  `pev_t_ir_notice_explanation_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_notice_id` bigint(30) DEFAULT NULL,
+  `explanation` text,
+  `date_created` datetime DEFAULT NULL,
+  `s_bpartner_employee_id_mkr` bigint(30) DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_notice_explanation_id`),
+  KEY `pev_t_ir_notice_id` (`pev_t_ir_notice_id`),
+  KEY `s_bpartner_employee_id_mkr` (`s_bpartner_employee_id_mkr`),
+  CONSTRAINT `pev_t_ir_notice_explanation_ibfk_1` FOREIGN KEY (`pev_t_ir_notice_id`) REFERENCES `pev_t_ir_notice` (`pev_t_ir_notice_id`),
+  CONSTRAINT `pev_t_ir_notice_explanation_ibfk_2` FOREIGN KEY (`s_bpartner_employee_id_mkr`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=347 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="pev_t_ir_signee" view="colnames">
+<left>699</left>
+<top>444</top>
+<width>229</width>
+<height>231</height>
+<sql_create_table>CREATE TABLE `pev_t_ir_signee` (
+  `pev_t_ir_signee_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `pev_t_ir_id` bigint(30) DEFAULT NULL,
+  `pev_t_ir_bpartner_employee_id` bigint(30) DEFAULT NULL,
+  `s_bpartner_employee_id` bigint(30) DEFAULT NULL,
+  `role` varchar(30) DEFAULT NULL,
+  `usercode` bigint(30) DEFAULT NULL,
+  `action` varchar(45) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `created` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`pev_t_ir_signee_id`),
+  KEY `FK_pev_i_ir_id_signee_ir` (`pev_t_ir_id`),
+  KEY `s_bpartner_employee_id` (`s_bpartner_employee_id`),
+  KEY `pev_t_ir_bpartner_employee_id` (`pev_t_ir_bpartner_employee_id`),
+  CONSTRAINT `FK_pev_i_ir_id_signee_ir` FOREIGN KEY (`pev_t_ir_id`) REFERENCES `pev_t_ir` (`pev_t_ir_id`),
+  CONSTRAINT `pev_t_ir_signee_ibfk_1` FOREIGN KEY (`s_bpartner_employee_id`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`),
+  CONSTRAINT `pev_t_ir_signee_ibfk_2` FOREIGN KEY (`pev_t_ir_bpartner_employee_id`) REFERENCES `pev_t_ir_bpartner_employee` (`pev_t_ir_bpartner_employee_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=989 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="paf_i_company" view="colnames">
+<left>503</left>
+<top>599</top>
+<width>153</width>
+<height>282</height>
+<sql_create_table>CREATE TABLE `paf_i_company` (
+  `paf_i_company_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `company_name` varchar(50) DEFAULT NULL,
+  `created` varchar(30) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `updated` varchar(30) DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `address` varchar(50) DEFAULT NULL,
+  `logo_location` varchar(115) DEFAULT NULL,
+  `has_holiday_pay` tinyint(1) DEFAULT NULL,
+  `telephone_number` varchar(30) DEFAULT NULL,
+  `abbreviation` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`paf_i_company_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="s_bpartner_employee" view="colnames">
+<left>707</left>
+<top>683</top>
+<width>268</width>
+<height>311</height>
+<sql_create_table>CREATE TABLE `s_bpartner_employee` (
+  `s_bpartner_employee_id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `firstname` varchar(30) NOT NULL,
+  `middlename` varchar(30) NOT NULL,
+  `lastname` varchar(30) NOT NULL,
+  `companyname` varchar(30) NOT NULL,
+  `sex` enum('MALE','FEMALE') NOT NULL,
+  `employee_no` varchar(30) DEFAULT NULL,
+  `marital_status` enum('SINGLE','MARRIED','SEPARATED','WIDOWED') NOT NULL,
+  `birthdate` date NOT NULL,
+  `image_location` varchar(256) DEFAULT NULL,
+  `remaining_leave` double NOT NULL,
+  `created` varchar(30) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  `date_updated` datetime DEFAULT NULL,
+  `updated` varchar(30) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `s_bpartner_id` bigint(30) DEFAULT NULL,
+  `s_bpartner_employee_group_id` bigint(30) DEFAULT NULL,
+  `s_bpartner_employee_id_approver1st` bigint(30) DEFAULT NULL,
+  `s_bpartner_employee_id_approver2nd` bigint(30) DEFAULT NULL,
+  `sss_no` varchar(20) DEFAULT NULL,
+  `hdmf_no` varchar(20) DEFAULT NULL,
+  `phic_no` varchar(20) DEFAULT NULL,
+  `tin_no` varchar(20) DEFAULT NULL,
+  `contact_no` varchar(20) DEFAULT NULL,
+  `address` text,
+  `s_bpartner_employee_id_revision` bigint(30) DEFAULT NULL,
+  `is_for_approval` tinyint(1) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `location_coordX` decimal(12,5) DEFAULT NULL,
+  `location_coordY` decimal(12,5) DEFAULT NULL,
+  `paf_i_company_id` bigint(30) DEFAULT NULL,
+  PRIMARY KEY (`s_bpartner_employee_id`),
+  KEY `FK_employee_edited` (`updated`),
+  KEY `s_bpartner_id` (`s_bpartner_id`),
+  KEY `FK_s_bpartner_employee` (`s_bpartner_employee_group_id`),
+  KEY `FK_s_bpartner_employee_1st` (`s_bpartner_employee_id_approver1st`),
+  KEY `FK_s_bpartner_employee_2nd` (`s_bpartner_employee_id_approver2nd`),
+  KEY `FK_s_bpartner_employee_rev` (`s_bpartner_employee_id_revision`),
+  KEY `FK_s_bpartner_employee_company` (`paf_i_company_id`),
+  CONSTRAINT `FK_s_bpartner_employee_1st` FOREIGN KEY (`s_bpartner_employee_id_approver1st`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`),
+  CONSTRAINT `FK_s_bpartner_employee_2nd` FOREIGN KEY (`s_bpartner_employee_id_approver2nd`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`),
+  CONSTRAINT `FK_s_bpartner_employee_company` FOREIGN KEY (`paf_i_company_id`) REFERENCES `paf_i_company` (`paf_i_company_id`),
+  CONSTRAINT `FK_s_bpartner_employee_rev` FOREIGN KEY (`s_bpartner_employee_id_revision`) REFERENCES `s_bpartner_employee` (`s_bpartner_employee_id`),
+  CONSTRAINT `s_bpartner_employee_ibfk_1` FOREIGN KEY (`s_bpartner_id`) REFERENCES `s_bpartner` (`s_bpartner_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2829 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
